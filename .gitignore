@@ -1,0 +1,26 @@
+# Données PostgreSQL (volumineux, régénérable, contient des données binaires)
+postgres/data/
+
+# Objets MinIO déjà ingérés (données, pas code)
+minio/data/
+
+# Config/état interne du Runner (généré automatiquement à l'enregistrement)
+gitlab-runner/config/
+
+# Logs Airflow (générés à l'exécution, inutiles à versionner)
+airflow/logs/
+
+# Fichiers sources bruts Olist (trop lourds, doivent être régénérés/téléchargés, pas commités)
+sources/csv/*.csv
+sources/datasets/*.csv
+sources/mockoon/*.csv
+sources/mockoon/*.json
+sources/sftp/*.csv
+sources/smb/*.csv
+
+# Fichiers d'environnement contenant des secrets (si vous en créez un .env plus tard)
+.env
+
+# Fichiers Python compilés (si vous ajoutez des scripts)
+__pycache__/
+*.pyc

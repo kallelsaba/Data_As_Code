@@ -145,6 +145,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./airflow/plugins:/opt/airflow/plugins
+      - ./sources:/opt/airflow/sources
 
 
     command:
@@ -190,7 +191,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./airflow/plugins:/opt/airflow/plugins
-
+      - ./sources:/opt/airflow/sources
 
     ports:
 
@@ -238,7 +239,7 @@ services:
 
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
-
+      - ./sources:/opt/airflow/sources
 
     command:
 
@@ -449,6 +450,48 @@ services:
 
     entrypoint: ["tail", "-f", "/dev/null"]
 
+# ==================================================
+# Mockoon
+# ==================================================
+
+  mockoon:
+    image: mockoon/cli:latest
+    container_name: mockoon
+    restart: unless-stopped
+    command: ["-d", "/data/mockoon-config.json", "-p", "3000"]
+    volumes:
+      - ./sources/mockoon:/data
+    ports:
+      - "3000:3000"
+
+
+# ==================================================
+# SFTP
+# ==================================================
+
+  sftp:
+    image: atmoz/sftp:latest
+    container_name: sftp
+    restart: unless-stopped
+    volumes:
+      - ./sources/sftp:/home/dataops/upload
+    ports:
+      - "2222:22"
+    command: dataops:dataops:1001
+
+# ==================================================
+# SMB
+# ==================================================
+
+  smb:
+    image: dperson/samba:latest
+    container_name: smb
+    restart: unless-stopped
+    command: '-u "dataops;dataops" -s "share;/share;yes;no" -p'
+    volumes:
+      - ./sources/smb:/share
+    ports:
+      - "445:445"
 
 # ==================================================
 # Volumes

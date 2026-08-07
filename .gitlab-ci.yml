@@ -5,3 +5,10 @@ test_connexion:
   stage: test
   script:
     - echo "Runner opérationnel"
+
+deploy_dag:
+  stage: deploy
+  script:
+    - rsync -avz airflow/dags/ dataops@10.110.188.126:/opt/data-platform/airflow/dags/
+  only:
+    - main

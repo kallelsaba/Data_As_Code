@@ -1,0 +1,7 @@
+stages:
+  - test
+
+test_connexion:
+  stage: test
+  script:
+    - echo "Runner opérationnel"

@@ -52,7 +52,7 @@ def ingest_datasets():
 with DAG(
     dag_id="bronze_ingestion",
     start_date=pendulum.datetime(2026, 1, 1, tz=local_tz),
-    schedule="37 18 * * *",
+    schedule="32 19 * * *",
     catchup=False,
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],

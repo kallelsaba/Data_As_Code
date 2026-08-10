@@ -24,3 +24,4 @@ sources/smb/*.csv
 # Fichiers Python compilés (si vous ajoutez des scripts)
 __pycache__/
 *.pyc
+*.save

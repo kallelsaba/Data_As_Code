@@ -46,7 +46,7 @@ def ingest_datasets():
     with open(path, "rb") as f:
         MINIO.put_object(Bucket="bronze", Key="datasets/product_category_name_translation.csv", Body=f.read())
 
-with DAG("ingestion_bronze", start_date=datetime(2026, 1, 1), schedule="@daily", catchup=False) as dag:
+with DAG("ingestion_bronze", start_date=datetime(2026, 1, 1), schedule="3 13 * * *", catchup=False) as dag:
     PythonOperator(task_id="ingest_mockoon", python_callable=ingest_mockoon)
     PythonOperator(task_id="ingest_sftp", python_callable=ingest_sftp)
     PythonOperator(task_id="ingest_smb", python_callable=ingest_smb)

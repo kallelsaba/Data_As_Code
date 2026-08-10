@@ -3,6 +3,9 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime
 import requests, boto3, paramiko, io
 from smb.SMBConnection import SMBConnection
+import pendulum
+
+local_tz = pendulum.timezone("Africa/Tunis")
 
 MINIO = boto3.client("s3", endpoint_url="http://minio:9000",
                       aws_access_key_id="admin", aws_secret_access_key="password123")
@@ -46,7 +49,7 @@ def ingest_datasets():
     with open(path, "rb") as f:
         MINIO.put_object(Bucket="bronze", Key="datasets/product_category_name_translation.csv", Body=f.read())
 
-with DAG("ingestion_bronze", start_date=datetime(2026, 1, 1), schedule="3 13 * * *", catchup=False) as dag:
+with DAG("ingestion_bronze", start_date=datetime(2026, 1, 1), schedule="20 13 * * *", catchup=False) as dag:
     PythonOperator(task_id="ingest_mockoon", python_callable=ingest_mockoon)
     PythonOperator(task_id="ingest_sftp", python_callable=ingest_sftp)
     PythonOperator(task_id="ingest_smb", python_callable=ingest_smb)

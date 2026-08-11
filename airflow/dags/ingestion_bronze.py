@@ -2,7 +2,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from datetime import datetime
 import requests, boto3, paramiko, io
-from smb.SMBConnection import SMBConnection
+# from smb.SMBConnection import SMBConnection
 import pendulum
 from smbclient import register_session, listdir, open_file
 
@@ -69,7 +69,7 @@ def ingest_csv():
 with DAG(
     dag_id="bronze_ingestion",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
-    schedule="40 11 * * *",
+    schedule="30 12 * * *",
     catchup=False,
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],

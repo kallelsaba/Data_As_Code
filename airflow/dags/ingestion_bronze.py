@@ -6,6 +6,7 @@ import requests, boto3, paramiko, io
 import pendulum
 from smbclient import register_session, listdir, open_file
 from airflow.sdk import Asset
+import json
 
 bronze_dataset = Asset("s3://bronze/")
 
@@ -21,7 +22,7 @@ prefix = f"{today.year}/{today.month:02d}/{today.day:02d}"
 
 def ingest_mockoon():
     for t in ["orders", "order_items", "customers"]:
-        data = requests.get(f"http://mockoon:3000/{t}").content
+        data = requests.get(f"http://mockoon:3000/{t}").json()
         ndjson = "\n".join(json.dumps(record) for record in data)
         MINIO.put_object(Bucket="bronze", Key=f"mockoon/{t}/{prefix}/{t}.json", Body=ndjson.encode("utf-8"))
 
@@ -63,7 +64,7 @@ def ingest_csv():
 with DAG(
     dag_id="bronze_ingestion",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
-    schedule="35 13 * * *",
+    schedule="39 13 * * *",
     catchup=False,
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],

@@ -23,7 +23,7 @@ prefix = f"{today.year}/{today.month:02d}/{today.day:02d}"
 def ingest_mockoon():
     for t in ["orders", "order_items", "customers"]:
         data = requests.get(f"http://mockoon:3000/{t}").content
-        MINIO.put_object(Bucket="bronze", Key=f"mockoon/{t}/{prefix}/{t}.json", Body=data)
+        MINIO.put_object(Bucket="bronze", Key=f"mockoon/{prefix}/{t}.json", Body=data)
 
 def ingest_sftp():
     ssh = paramiko.Transport(("sftp", 22))
@@ -73,7 +73,7 @@ def ingest_csv():
 with DAG(
     dag_id="bronze_ingestion",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
-    schedule="30 11 * * *",
+    schedule="15 12 * * *",
     catchup=False,
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],

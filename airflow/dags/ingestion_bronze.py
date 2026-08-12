@@ -33,7 +33,7 @@ def ingest_sftp():
         buf = io.BytesIO()
         sftp.getfo(f"/upload/{f}", buf)
         table_name = f.replace("olist_", "").replace("_dataset.csv", "")
-        MINIO.put_object(Bucket="bronze", Key=f"sftp/{table_name}/{prefix}/{f}", Body=buf.getvalue())
+        MINIO.put_object(Bucket="bronze", Key=f"sftp/{table_name}/{prefix}/{table_name}.csv", Body=buf.getvalue())
     sftp.close()
     ssh.close()
 
@@ -52,7 +52,7 @@ def ingest_smb():
             data = f.read()
 
         table_name = filename.replace("olist_", "").replace("_dataset.csv", "")
-        MINIO.put_object(Bucket="bronze", Key=f"smb/{table_name}/{prefix}/{filename}", Body=data)
+        MINIO.put_object(Bucket="bronze", Key=f"smb/{table_name}/{prefix}/{table_name}.csv", Body=data)
 
 def ingest_csv():
     path = f"{SOURCES_DIR}/csv/olist_geolocation_dataset.csv"
@@ -63,7 +63,7 @@ def ingest_csv():
 with DAG(
     dag_id="bronze_ingestion",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
-    schedule="35 12 * * *",
+    schedule="45 12 * * *",
     catchup=False,
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],

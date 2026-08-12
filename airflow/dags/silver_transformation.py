@@ -2,9 +2,9 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 import pendulum
 import trino
-from airflow.datasets import Dataset
+from airflow.sdk import Asset
 
-bronze_dataset = Dataset("s3://bronze/")
+bronze_dataset = Asset("s3://bronze/")
 
 local_tz = pendulum.timezone("Africa/Tunis")
 

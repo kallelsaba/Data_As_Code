@@ -6,9 +6,9 @@ import requests, boto3, paramiko, io
 # from smb.SMBConnection import SMBConnection ...
 import pendulum
 from smbclient import register_session, listdir, open_file
-from airflow.datasets import Dataset
+from airflow.sdk import Asset
 
-bronze_dataset = Dataset("s3://bronze/")
+bronze_dataset = Asset("s3://bronze/")
 
 local_tz = pendulum.timezone("Africa/Tunis")
 

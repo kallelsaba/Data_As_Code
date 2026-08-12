@@ -108,8 +108,8 @@ TABLES = {
             review_score VARCHAR,
             review_comment_title VARCHAR,
             review_comment_message VARCHAR,
-            review_creation_date TIMESTAMP,
-            review_answer_timestamp TIMESTAMP
+            review_creation_date VARCHAR,
+            review_answer_timestamp VARCHAR
         """
     },
 }

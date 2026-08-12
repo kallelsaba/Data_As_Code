@@ -23,7 +23,7 @@ prefix = f"{today.year}/{today.month:02d}/{today.day:02d}"
 def ingest_mockoon():
     for t in ["orders", "order_items", "customers"]:
         data = requests.get(f"http://mockoon:3000/{t}").content
-        MINIO.put_object(Bucket="bronze", Key=f"mockoon/{prefix}/{t}.json", Body=data)
+        MINIO.put_object(Bucket="bronze", Key=f"mockoon/{t}/{prefix}/{t}.json", Body=data)
 
 def ingest_sftp():
     ssh = paramiko.Transport(("sftp", 22))
@@ -32,21 +32,9 @@ def ingest_sftp():
     for f in sftp.listdir("/upload"):
         buf = io.BytesIO()
         sftp.getfo(f"/upload/{f}", buf)
-        MINIO.put_object(Bucket="bronze", Key=f"sftp/{prefix}/{f}", Body=buf.getvalue())
+        MINIO.put_object(Bucket="bronze", Key=f"sftp/{f}/{prefix}/{f}", Body=buf.getvalue())
     sftp.close()
     ssh.close()
-
-"""def ingest_smb():
-    conn = SMBConnection("dataops", "dataops", "airflow", "smb", use_ntlm_v2=True, is_direct_tcp=True)
-    conn.connect("smb", 445, timeout=10)
-    for f in conn.listPath("share", "/"):
-        if f.isDirectory:
-            continue
-        buf = io.BytesIO()
-        conn.retrieveFile("share", f"/{f.filename}", buf)
-        MINIO.put_object(Bucket="bronze", Key=f"smb/{f.filename}", Body=buf.getvalue())
-    conn.close()
-"""
 
 def ingest_smb():
     register_session(
@@ -62,7 +50,7 @@ def ingest_smb():
         ) as f:
             data = f.read()
 
-        MINIO.put_object(Bucket="bronze", Key=f"smb/{prefix}/{filename}", Body=data)
+        MINIO.put_object(Bucket="bronze", Key=f"smb/{filename}/{prefix}/{filename}", Body=data)
 
 def ingest_csv():
     path = f"{SOURCES_DIR}/csv/olist_geolocation_dataset.csv"
@@ -73,7 +61,7 @@ def ingest_csv():
 with DAG(
     dag_id="bronze_ingestion",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
-    schedule="15 12 * * *",
+    schedule="25 12 * * *",
     catchup=False,
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],

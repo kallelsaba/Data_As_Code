@@ -116,7 +116,9 @@ services:
 
   airflow-init:
 
-    image: apache/airflow:3.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
 
     container_name: airflow-init
 
@@ -161,7 +163,9 @@ services:
   airflow-api-server:
 
 
-    image: apache/airflow:3.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
 
     container_name: airflow-api-server
 
@@ -215,8 +219,9 @@ services:
 
   airflow-scheduler:
 
-
-    image: apache/airflow:3.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
 
     container_name: airflow-scheduler
 
@@ -248,16 +253,16 @@ services:
       - ./sources:/opt/airflow/sources
 
     command:
-
       scheduler
-
 
 # ==================================================
 # Pour éliminer le besoin de reserialize à chaque déploiement CI/CD
 # ==================================================
 
   airflow-dag-processor:
-    image: apache/airflow:3.0.0
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
     container_name: airflow-dag-processor
     depends_on:
       airflow-init:
@@ -519,6 +524,62 @@ services:
     ports:
       - "445:445"
 
+
+# ==================================================
+# Hive Metastore
+# ==================================================
+  hive-metastore:
+    image: starburstdata/hive:3.1.3-e.4
+    container_name: hive-metastore
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    environment:
+      HIVE_METASTORE_DRIVER: org.postgresql.Driver
+      HIVE_METASTORE_JDBC_URL: jdbc:postgresql://postgres:5432/metastore
+      HIVE_METASTORE_USER: hive
+      HIVE_METASTORE_PASSWORD: hive
+      HIVE_METASTORE_WAREHOUSE_DIR: s3://warehouse/
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: admin
+      S3_SECRET_KEY: password123
+      S3_PATH_STYLE_ACCESS: "true"
+      REGION: us-east-1
+      GOOGLE_CLOUD_KEY_FILE_PATH: ""
+      AZURE_ADL_CLIENT_ID: ""
+      AZURE_ADL_CREDENTIAL: ""
+      AZURE_ADL_REFRESH_URL: ""
+      AZURE_ABFS_STORAGE_ACCOUNT: ""
+      AZURE_ABFS_ACCESS_KEY: ""
+      AZURE_WASB_STORAGE_ACCOUNT: ""
+      AZURE_ABFS_OAUTH: ""
+      AZURE_ABFS_OAUTH_TOKEN_PROVIDER: ""
+      AZURE_ABFS_OAUTH_CLIENT_ID: ""
+      AZURE_ABFS_OAUTH_SECRET: ""
+      AZURE_ABFS_OAUTH_ENDPOINT: ""
+      AZURE_WASB_ACCESS_KEY: ""
+      HIVE_HOME: /opt/apache-hive-3.1.3-bin
+    ports:
+      - "9083:9083"
+
+
+# ==================================================
+# Trino
+# ==================================================
+  trino:
+    image: trinodb/trino:latest
+    container_name: trino
+    restart: unless-stopped
+    depends_on:
+      - hive-metastore
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./trino/catalog:/etc/trino/catalog
+
 # ==================================================
 # Volumes
 # ==================================================
@@ -537,3 +598,4 @@ volumes:
 
   gitlab_runner:
 
+  hive_metastore_db_data:

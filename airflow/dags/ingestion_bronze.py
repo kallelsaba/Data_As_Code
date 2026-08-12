@@ -6,6 +6,9 @@ import requests, boto3, paramiko, io
 # from smb.SMBConnection import SMBConnection ...
 import pendulum
 from smbclient import register_session, listdir, open_file
+from airflow.datasets import Dataset
+
+bronze_dataset = Dataset("s3://bronze/")
 
 local_tz = pendulum.timezone("Africa/Tunis")
 
@@ -75,7 +78,7 @@ with DAG(
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],
 ) as dag:
-    PythonOperator(task_id="ingest_mockoon", python_callable=ingest_mockoon)
-    PythonOperator(task_id="ingest_sftp", python_callable=ingest_sftp)
-    PythonOperator(task_id="ingest_smb", python_callable=ingest_smb)
-    PythonOperator(task_id="ingest_csv", python_callable=ingest_csv)
+    PythonOperator(task_id="ingest_mockoon", python_callable=ingest_mockoon, outlets=[bronze_dataset])
+    PythonOperator(task_id="ingest_sftp", python_callable=ingest_sftp, outlets=[bronze_dataset])
+    PythonOperator(task_id="ingest_smb", python_callable=ingest_smb, outlets=[bronze_dataset])
+    PythonOperator(task_id="ingest_csv", python_callable=ingest_csv, outlets=[bronze_dataset])

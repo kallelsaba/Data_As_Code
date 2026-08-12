@@ -1,0 +1,11 @@
+FROM apache/airflow:3.3.0
+
+USER airflow
+RUN pip install --no-cache-dir \
+    pysmb \
+    boto3 \
+    paramiko \
+    requests \
+    smbprotocol \
+    trino
+	

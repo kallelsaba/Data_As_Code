@@ -15,8 +15,8 @@ TABLES = {
         "skip_header": True,
         "columns": """
             geolocation_zip_code_prefix VARCHAR,
-            geolocation_lat DOUBLE,
-            geolocation_lng DOUBLE,
+            geolocation_lat VARCHAR,
+            geolocation_lng VARCHAR,
             geolocation_city VARCHAR,
             geolocation_state VARCHAR
         """
@@ -66,13 +66,13 @@ TABLES = {
         "columns": """
             product_id VARCHAR,
             product_category_name VARCHAR,
-            product_name_lenght INTEGER,
-            product_description_lenght INTEGER,
-            product_photos_qty INTEGER,
-            product_weight_g DOUBLE,
-            product_length_cm DOUBLE,
-            product_height_cm DOUBLE,
-            product_width_cm DOUBLE
+            product_name_lenght VARCHAR,
+            product_description_lenght VARCHAR,
+            product_photos_qty VARCHAR,
+            product_weight_g VARCHAR,
+            product_length_cm VARCHAR,
+            product_height_cm VARCHAR,
+            product_width_cm VARCHAR
         """
     },
     "sellers": {
@@ -92,10 +92,10 @@ TABLES = {
         "skip_header": True,
         "columns": """
             order_id VARCHAR,
-            payment_sequential INTEGER,
+            payment_sequential VARCHAR,
             payment_type VARCHAR,
-            payment_installments INTEGER,
-            payment_value DOUBLE
+            payment_installments VARCHAR,
+            payment_value VARCHAR
         """
     },
     "order_reviews": {
@@ -105,7 +105,7 @@ TABLES = {
         "columns": """
             review_id VARCHAR,
             order_id VARCHAR,
-            review_score INTEGER,
+            review_score VARCHAR,
             review_comment_title VARCHAR,
             review_comment_message VARCHAR,
             review_creation_date TIMESTAMP,

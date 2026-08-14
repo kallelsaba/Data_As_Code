@@ -3,6 +3,7 @@ from airflow.operators.python import PythonOperator
 import pendulum
 import trino
 from airflow.sdk import Asset
+from airflow.operators.bash import BashOperator
 
 bronze_dataset = Asset("s3://bronze/")
 
@@ -151,4 +152,8 @@ with DAG(
 ) as dag:
     t1 = PythonOperator(task_id="create_hive_schema", python_callable=create_hive_schema)
     t2 = PythonOperator(task_id="create_external_tables", python_callable=create_external_tables)
-    t1 >> t2
+    t3 = BashOperator(
+        task_id="run_dbt_stg_orders",
+        bash_command="docker exec dbt dbt run --select stg_orders"
+    )
+    t1 >> t2 >> t3

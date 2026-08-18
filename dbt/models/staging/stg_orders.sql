@@ -1,3 +1,4 @@
+
 {{ config(
     materialized='table',
     schema='silver'
@@ -177,8 +178,8 @@ order_payments_clean AS (
         CAST(payment_sequential AS INTEGER) AS payment_sequential,
         LOWER(TRIM(payment_type)) AS payment_type,
         CAST(payment_installments AS INTEGER) AS payment_installments,
-        CASE WHEN payment_value >= 0
-             THEN payment_value
+        CASE WHEN CAST(payment_value AS DOUBLE) >= 0
+             THEN CAST(payment_value AS DOUBLE)
              ELSE NULL
         END AS payment_value
     FROM order_payments_dedup
@@ -312,7 +313,7 @@ SELECT
     END AS is_delivered_on_time,
 
     -- Satisfaction client
-    CASE WHEN CAST(review_score AS INTEGER) >= 4 THEN TRUE ELSE FALSE END AS is_positive_review,
-    CASE WHEN CAST(review_score AS INTEGER) <= 2 THEN TRUE ELSE FALSE END AS is_negative_review
+    CASE WHEN CAST(review_score AS SMALLINT) >= 4 THEN TRUE ELSE FALSE END AS is_positive_review,
+    CASE WHEN CAST(review_score AS SMALLINT) <= 2 THEN TRUE ELSE FALSE END AS is_negative_review
 
 FROM base

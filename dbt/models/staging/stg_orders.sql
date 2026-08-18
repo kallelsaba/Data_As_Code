@@ -102,8 +102,8 @@ sellers_clean AS (
 geolocation_agg AS (
     SELECT
         geolocation_zip_code_prefix,
-        AVG(geolocation_lat) AS avg_lat,
-        AVG(geolocation_lng) AS avg_lng,
+        AVG(CAST(NULLIF(geolocation_lat, '') AS DOUBLE)) AS avg_lat,
+        AVG(CAST(NULLIF(geolocation_lng, '') AS DOUBLE)) AS avg_lng,
         LOWER(TRIM(ARBITRARY(geolocation_city))) AS geolocation_city,
         UPPER(TRIM(ARBITRARY(geolocation_state))) AS geolocation_state
     FROM {{ source('bronze', 'geolocation') }}
@@ -312,7 +312,7 @@ SELECT
     END AS is_delivered_on_time,
 
     -- Satisfaction client
-    CASE WHEN review_score >= 4 THEN TRUE ELSE FALSE END AS is_positive_review,
-    CASE WHEN review_score <= 2 THEN TRUE ELSE FALSE END AS is_negative_review
+    CASE WHEN CAST(review_score AS INTEGER) >= 4 THEN TRUE ELSE FALSE END AS is_positive_review,
+    CASE WHEN CAST(review_score AS INTEGER) <= 2 THEN TRUE ELSE FALSE END AS is_negative_review
 
 FROM base

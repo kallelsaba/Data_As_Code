@@ -126,11 +126,11 @@ products_typed AS (
     SELECT
         product_id,
         COALESCE(NULLIF(LOWER(TRIM(product_category_name)), ''), 'outros') AS product_category_name,
-        CAST(product_photos_qty AS INTEGER) AS product_photos_qty,
-        NULLIF(CAST(product_weight_g AS DOUBLE), 0.0) AS product_weight_g,
-        NULLIF(CAST(product_length_cm AS DOUBLE), 0.0) AS product_length_cm,
-        NULLIF(CAST(product_height_cm AS DOUBLE), 0.0) AS product_height_cm,
-        NULLIF(CAST(product_width_cm AS DOUBLE), 0.0) AS product_width_cm 
+        TRY_CAST(product_photos_qty AS INTEGER) AS product_photos_qty,
+        NULLIF(TRY_CAST(product_weight_g AS DOUBLE), 0.0) AS product_weight_g,
+        NULLIF(TRY_CAST(product_length_cm AS DOUBLE), 0.0) AS product_length_cm,
+        NULLIF(TRY_CAST(product_height_cm AS DOUBLE), 0.0) AS product_height_cm,
+        NULLIF(TRY_CAST(product_width_cm AS DOUBLE), 0.0) AS product_width_cm 
     FROM products_dedup
     WHERE rn = 1
 ),
@@ -210,13 +210,13 @@ order_reviews_clean AS (
     SELECT
         order_id,
         review_id,
-        CASE WHEN CAST(review_score AS SMALLINT) BETWEEN 1 AND 5
-             THEN CAST(review_score AS SMALLINT) ELSE NULL END AS review_score,
+        CASE WHEN TRY_CAST(review_score AS SMALLINT) BETWEEN 1 AND 5
+             THEN TRY_CAST(review_score AS SMALLINT) ELSE NULL END AS review_score,
         review_comment_title,
         review_comment_message,
         (review_comment_message IS NOT NULL AND TRIM(review_comment_message) != '') AS has_comment,
-        CAST(review_creation_date AS TIMESTAMP) AS review_creation_date,
-        CAST(review_answer_timestamp AS TIMESTAMP) AS review_answer_timestamp
+        TRY_CAST(review_creation_date AS TIMESTAMP) AS review_creation_date,
+        TRY_CAST(review_answer_timestamp AS TIMESTAMP) AS review_answer_timestamp
     FROM order_reviews_dedup
     WHERE rn = 1
 ),
@@ -313,7 +313,7 @@ SELECT
     END AS is_delivered_on_time,
 
     -- Satisfaction client
-    CASE WHEN CAST(review_score AS SMALLINT) >= 4 THEN TRUE ELSE FALSE END AS is_positive_review,
-    CASE WHEN CAST(review_score AS SMALLINT) <= 2 THEN TRUE ELSE FALSE END AS is_negative_review
+    CASE WHEN TRY_CAST(review_score AS SMALLINT) >= 4 THEN TRUE ELSE FALSE END AS is_positive_review,
+    CASE WHEN TRY_CAST(review_score AS SMALLINT) <= 2 THEN TRUE ELSE FALSE END AS is_negative_review
 
 FROM base

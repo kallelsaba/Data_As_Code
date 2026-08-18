@@ -175,9 +175,9 @@ order_payments_dedup AS (
 order_payments_clean AS (
     SELECT
         order_id,
-        CAST(payment_sequential AS INTEGER) AS payment_sequential,
+        TRY_CAST(payment_sequential AS INTEGER) AS payment_sequential,
         LOWER(TRIM(payment_type)) AS payment_type,
-        CAST(payment_installments AS INTEGER) AS payment_installments,
+        TRY_CAST(payment_installments AS INTEGER) AS payment_installments,
         CASE WHEN TRY_CAST(payment_value AS DOUBLE) >= 0
              THEN TRY_CAST(payment_value AS DOUBLE)
              ELSE NULL

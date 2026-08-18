@@ -178,8 +178,8 @@ order_payments_clean AS (
         CAST(payment_sequential AS INTEGER) AS payment_sequential,
         LOWER(TRIM(payment_type)) AS payment_type,
         CAST(payment_installments AS INTEGER) AS payment_installments,
-        CASE WHEN NULLIF(TRIM(payment_value), '') IS NOT NULL AND CAST(NULLIF(TRIM(payment_value), '') AS DOUBLE) >= 0
-             THEN CAST(NULLIF(TRIM(payment_value), '') AS DOUBLE)
+        CASE WHEN TRY_CAST(payment_value AS DOUBLE) >= 0
+             THEN TRY_CAST(payment_value AS DOUBLE)
              ELSE NULL
         END AS payment_value
     FROM order_payments_dedup

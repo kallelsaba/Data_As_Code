@@ -225,6 +225,7 @@ services:
 
     container_name: airflow-scheduler
 
+    user: "50000:999"   # 50000 = uid airflow, 999 = gid docker de l'hôte
 
     depends_on:
 
@@ -251,6 +252,7 @@ services:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./sources:/opt/airflow/sources
+      - /var/run/docker.sock:/var/run/docker.sock
 
     command:
       scheduler
@@ -465,13 +467,13 @@ services:
 # ==================================================
 
   dbt:
-    image: ghcr.io/dbt-labs/dbt-postgres:1.8.latest
+    build:
+      context: ./dbt
     container_name: dbt
     restart: unless-stopped
 
     depends_on:
-      postgres:
-        condition: service_healthy
+      - trino
 
     volumes:
       - ./dbt:/usr/app

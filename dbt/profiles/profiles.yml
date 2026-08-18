@@ -2,10 +2,11 @@ data_platform:
   target: dev
   outputs:
     dev:
-      type: postgres
-      host: postgres
-      user: dataops
-      password: dataops
-      port: 5432
-      dbname: dbt_db
-      schema: public
+      type: trino
+      method: none
+      host: trino
+      user: airflow
+      port: 8080
+      database: postgres
+      schema: silver
+      threads: 4

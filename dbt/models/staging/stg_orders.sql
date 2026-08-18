@@ -43,14 +43,14 @@ order_items_clean AS (
         seller_id,
         shipping_limit_date,
         CASE
-            WHEN NULLIF(TRIM(price), '') IS NOT NULL AND CAST(NULLIF(TRIM(price), '') AS DOUBLE) >= 0
-            THEN CAST(NULLIF(TRIM(price), '') AS DOUBLE)
+            WHEN price >= 0
+            THEN price
             ELSE NULL
         END AS price,
 
         CASE
-            WHEN NULLIF(TRIM(freight_value), '') IS NOT NULL AND CAST(NULLIF(TRIM(freight_value), '') AS DOUBLE) >= 0
-            THEN CAST(NULLIF(TRIM(freight_value), '') AS DOUBLE)
+            WHEN freight_value >= 0
+            THEN freight_value
             ELSE NULL
         END AS freight_value
     FROM order_items_dedup
@@ -102,8 +102,8 @@ sellers_clean AS (
 geolocation_agg AS (
     SELECT
         geolocation_zip_code_prefix,
-        AVG(CAST(NULLIF(TRIM(geolocation_lat), '') AS DOUBLE)) AS avg_lat,
-        AVG(CAST(NULLIF(TRIM(geolocation_lng), '') AS DOUBLE)) AS avg_lng,
+        AVG(geolocation_lat) AS avg_lat,
+        AVG(geolocation_lng) AS avg_lng,
         LOWER(TRIM(ARBITRARY(geolocation_city))) AS geolocation_city,
         UPPER(TRIM(ARBITRARY(geolocation_state))) AS geolocation_state
     FROM {{ source('bronze', 'geolocation') }}
@@ -177,8 +177,8 @@ order_payments_clean AS (
         CAST(payment_sequential AS INTEGER) AS payment_sequential,
         LOWER(TRIM(payment_type)) AS payment_type,
         CAST(payment_installments AS INTEGER) AS payment_installments,
-        CASE WHEN NULLIF(TRIM(payment_value), '') IS NOT NULL AND CAST(NULLIF(TRIM(payment_value), '') AS DOUBLE) >= 0
-             THEN CAST(NULLIF(TRIM(payment_value), '') AS DOUBLE)
+        CASE WHEN payment_value >= 0
+             THEN payment_value
              ELSE NULL
         END AS payment_value
     FROM order_payments_dedup

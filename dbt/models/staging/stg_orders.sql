@@ -126,10 +126,10 @@ products_typed AS (
         product_id,
         COALESCE(NULLIF(LOWER(TRIM(product_category_name)), ''), 'outros') AS product_category_name,
         CAST(product_photos_qty AS INTEGER) AS product_photos_qty,
-        NULLIF(CAST(NULLIF(TRIM(product_weight_g), '') AS DOUBLE), 0.0) AS product_weight_g,
-        NULLIF(CAST(NULLIF(TRIM(product_length_cm), '') AS DOUBLE), 0.0) AS product_length_cm,
-        NULLIF(CAST(NULLIF(TRIM(product_height_cm), '') AS DOUBLE), 0.0) AS product_height_cm,
-        NULLIF(CAST(NULLIF(TRIM(product_width_cm), '') AS DOUBLE), 0.0) AS product_width_cm
+        NULLIF(CAST(product_weight_g AS DOUBLE), 0.0) AS product_weight_g,
+        NULLIF(CAST(product_length_cm AS DOUBLE), 0.0) AS product_length_cm,
+        NULLIF(CAST(product_height_cm AS DOUBLE), 0.0) AS product_height_cm,
+        NULLIF(CAST(product_width_cm AS DOUBLE), 0.0) AS product_width_cm 
     FROM products_dedup
     WHERE rn = 1
 ),

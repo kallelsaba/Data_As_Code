@@ -154,6 +154,6 @@ with DAG(
     t2 = PythonOperator(task_id="create_external_tables", python_callable=create_external_tables)
     t3 = BashOperator(
         task_id="run_dbt_stg_orders",
-        bash_command="docker exec dbt dbt run --select stg_orders"
+        bash_command="docker exec dbt dbt run --select stg_orders --full-refresh"
     )
     t1 >> t2 >> t3

@@ -1,7 +1,8 @@
 
 {{ config(
-    materialized='incremental',
-    incremental_strategy='append'
+    materialized='table',
+    unique_key=['order_id', 'order_item_id'],
+    on_table_exists='drop'
 ) }}
 
 {% if is_incremental() %}

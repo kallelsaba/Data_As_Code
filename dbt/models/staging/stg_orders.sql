@@ -29,7 +29,7 @@ orders_clean AS (
         order_delivered_carrier_date,
         order_delivered_customer_date,
         order_estimated_delivery_date,
-         _ingestion_date
+        _ingestion_date
     FROM orders_dedup
     WHERE rn = 1
 ),

@@ -1,9 +1,8 @@
 
 {{ config(
     materialized='incremental',
-    unique_key=['order_id', 'order_item_id'],
-    on_table_exists='drop',
-    incremental_strategy='delete+insert'
+    incremental_strategy='append',
+    on_table_exists='drop'
 ) }}
 
 {% if is_incremental() %}
@@ -23,7 +22,7 @@ WITH orders_dedup AS (
     FROM {{ source('bronze', 'orders') }}
     WHERE order_id IS NOT NULL
 
-    {% if is_incremental() %}
+    {% if is_incremental() and max_date %}
     AND TRY_CAST(_ingestion_date AS DATE) > DATE '{{ max_date }}'
     {% endif %}
 ),

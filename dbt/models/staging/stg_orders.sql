@@ -1,8 +1,7 @@
 
 {{ config(
     materialized='incremental',
-    incremental_strategy='append',
-    on_table_exists='drop'
+    incremental_strategy='append'
 ) }}
 
 {% if is_incremental() %}

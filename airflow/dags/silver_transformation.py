@@ -152,8 +152,17 @@ with DAG(
 ) as dag:
     t1 = PythonOperator(task_id="create_hive_schema", python_callable=create_hive_schema)
     t2 = PythonOperator(task_id="create_external_tables", python_callable=create_external_tables)
+    t_clean = BashOperator(
+    	task_id="clean_dbt_temp_tables",
+    	bash_command=(
+        	"docker exec trino trino --execute "
+        	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders__dbt_tmp\"; "
+        	"docker exec trino trino --execute "
+        	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders__dbt_backup\""
+    	)
+    )
     t3 = BashOperator(
         task_id="run_dbt_stg_orders",
-        bash_command="docker exec dbt dbt run --select stg_orders --full-refresh"
+        bash_command="docker exec dbt dbt run --select stg_orders"
     )
-    t1 >> t2 >> t3
+    t1 >> t2 >> t_clean >>t3

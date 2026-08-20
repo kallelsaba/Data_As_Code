@@ -147,7 +147,7 @@ services:
 
     volumes:
 
-      - ./airflow/dags:/opt/airflow/dags
+      - /opt/data-platform-prod/airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./airflow/plugins:/opt/airflow/plugins
       - ./sources:/opt/airflow/sources
@@ -197,7 +197,7 @@ services:
 
     volumes:
 
-      - ./airflow/dags:/opt/airflow/dags
+      - /opt/data-platform-prod/airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./airflow/plugins:/opt/airflow/plugins
       - ./sources:/opt/airflow/sources
@@ -249,7 +249,7 @@ services:
 
     volumes:
 
-      - ./airflow/dags:/opt/airflow/dags
+      - /opt/data-platform-prod/airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./sources:/opt/airflow/sources
       - /var/run/docker.sock:/var/run/docker.sock
@@ -274,7 +274,7 @@ services:
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
       AIRFLOW__CORE__LOAD_EXAMPLES: "false"
     volumes:
-      - ./airflow/dags:/opt/airflow/dags
+      - /opt/data-platform-prod/airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./sources:/opt/airflow/sources
     command: dag-processor

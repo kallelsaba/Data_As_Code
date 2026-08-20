@@ -17,7 +17,7 @@ deploy_dag:
     - chmod 700 ~/.ssh
     - ssh-keyscan -H 10.110.188.126 >> ~/.ssh/known_hosts
   script:
-    - rsync -avz airflow/dags/ dataops@10.110.188.126:/opt/data-platform/airflow/dags/
+    - rsync -avz airflow/dags/ dataops@10.110.188.126:/opt/data-platform-prod/airflow/dags/
   #  - ssh dataops@10.110.188.126 "sleep 60 && docker exec airflow-api-server airflow dags trigger ingestion_bronze"
   only:
     - main

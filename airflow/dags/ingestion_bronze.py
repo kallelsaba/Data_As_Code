@@ -24,7 +24,7 @@ ingestion_date_str = today.isoformat()
 def ingest_mockoon():
     for t in ["orders", "order_items", "customers"]:
         data = requests.get(f"http://mockoon:3000/{t}").json()
-	for record in data:
+        for record in data:
             record["_ingestion_date"] = ingestion_date_str
         ndjson = "\n".join(json.dumps(record) for record in data)
         MINIO.put_object(Bucket="bronze", Key=f"mockoon/{t}/{prefix}/{t}.json", Body=ndjson.encode("utf-8"))
@@ -92,7 +92,7 @@ def ingest_csv():
 with DAG(
     dag_id="bronze_ingestion",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
-    schedule="33 14 * * *",
+    schedule="40 14 * * *",
     catchup=False,
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],

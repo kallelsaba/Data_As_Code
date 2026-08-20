@@ -7,6 +7,8 @@ import pendulum
 from smbclient import register_session, listdir, open_file
 from airflow.sdk import Asset
 import json
+import csv
+import io
 
 bronze_dataset = Asset("s3://bronze/")
 
@@ -92,7 +94,7 @@ def ingest_csv():
 with DAG(
     dag_id="bronze_ingestion",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
-    schedule="40 14 * * *",
+    schedule="55 14 * * *",
     catchup=False,
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],

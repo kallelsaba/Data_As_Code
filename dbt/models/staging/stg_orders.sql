@@ -1,6 +1,7 @@
 
 {{ config(
-    materialized='table'
+    materialized='table',
+    on_table_exists='drop'
 ) }}
 
 -- ============================================================

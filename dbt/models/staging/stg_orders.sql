@@ -1,6 +1,7 @@
 
 {{ config(
-    materialized='table',
+    materialized='incremental',
+    unique_key=['order_id', 'order_item_id'],
     on_table_exists='drop'
 ) }}
 
@@ -12,6 +13,11 @@ WITH orders_dedup AS (
         ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY order_purchase_timestamp DESC) AS rn
     FROM {{ source('bronze', 'orders') }}
     WHERE order_id IS NOT NULL
+
+    {% if is_incremental() %}
+    AND _ingestion_date > (SELECT MAX(_ingestion_date) FROM {{ this }})
+    {% endif %}
+
 ),
 orders_clean AS (
     SELECT
@@ -22,7 +28,8 @@ orders_clean AS (
         order_approved_at,
         order_delivered_carrier_date,
         order_delivered_customer_date,
-        order_estimated_delivery_date
+        order_estimated_delivery_date,
+         _ingestion_date
     FROM orders_dedup
     WHERE rn = 1
 ),
@@ -233,6 +240,7 @@ base AS (
         o.order_delivered_carrier_date,
         o.order_delivered_customer_date,
         o.order_estimated_delivery_date,
+        o._ingestion_date,
 
         c.customer_id,
         c.customer_unique_id,

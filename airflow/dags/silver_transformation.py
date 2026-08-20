@@ -19,7 +19,8 @@ TABLES = {
             geolocation_lat VARCHAR,
             geolocation_lng VARCHAR,
             geolocation_city VARCHAR,
-            geolocation_state VARCHAR
+            geolocation_state VARCHAR,
+            _ingestion_date DATE
         """
     },
     "customers": {
@@ -30,7 +31,8 @@ TABLES = {
             customer_unique_id VARCHAR,
             customer_zip_code_prefix VARCHAR,
             customer_city VARCHAR,
-            customer_state VARCHAR
+            customer_state VARCHAR,
+            _ingestion_date DATE
         """
     },
     "orders": {
@@ -44,7 +46,8 @@ TABLES = {
             order_approved_at TIMESTAMP,
             order_delivered_carrier_date TIMESTAMP,
             order_delivered_customer_date TIMESTAMP,
-            order_estimated_delivery_date TIMESTAMP
+            order_estimated_delivery_date TIMESTAMP,
+            _ingestion_date DATE
         """
     },
     "order_items": {
@@ -57,7 +60,8 @@ TABLES = {
             seller_id VARCHAR,
             shipping_limit_date TIMESTAMP,
             price DOUBLE,
-            freight_value DOUBLE
+            freight_value DOUBLE,
+            _ingestion_date DATE
         """
     },
     "products": {
@@ -73,7 +77,8 @@ TABLES = {
             product_weight_g VARCHAR,
             product_length_cm VARCHAR,
             product_height_cm VARCHAR,
-            product_width_cm VARCHAR
+            product_width_cm VARCHAR,
+            _ingestion_date DATE
         """
     },
     "sellers": {
@@ -84,7 +89,8 @@ TABLES = {
             seller_id VARCHAR,
             seller_zip_code_prefix VARCHAR,
             seller_city VARCHAR,
-            seller_state VARCHAR
+            seller_state VARCHAR,
+            _ingestion_date DATE
         """
     },
     "order_payments": {
@@ -96,7 +102,8 @@ TABLES = {
             payment_sequential VARCHAR,
             payment_type VARCHAR,
             payment_installments VARCHAR,
-            payment_value VARCHAR
+            payment_value VARCHAR,
+            _ingestion_date DATE
         """
     },
     "order_reviews": {
@@ -110,7 +117,8 @@ TABLES = {
             review_comment_title VARCHAR,
             review_comment_message VARCHAR,
             review_creation_date VARCHAR,
-            review_answer_timestamp VARCHAR
+            review_answer_timestamp VARCHAR,
+            _ingestion_date DATE
         """
     },
 }

@@ -2,7 +2,8 @@
 {{ config(
     materialized='incremental',
     incremental_strategy='append',
-    unique_key=['order_id', 'order_item_id']
+    unique_key=['order_id', 'order_item_id'],
+    views_enabled=false
 ) }}
 
 {% if is_incremental() %}

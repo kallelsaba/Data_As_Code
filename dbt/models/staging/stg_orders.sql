@@ -10,6 +10,7 @@
 -- ============================================================
 WITH orders_dedup AS (
     SELECT *,
+        TRY_CAST(_ingestion_date AS DATE) AS ingestion_date_typed,
         ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY order_purchase_timestamp DESC) AS rn
     FROM {{ source('bronze', 'orders') }}
     WHERE order_id IS NOT NULL

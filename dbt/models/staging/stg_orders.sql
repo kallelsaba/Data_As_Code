@@ -6,6 +6,13 @@
     incremental_strategy='delete+insert'
 ) }}
 
+{% if is_incremental() %}
+{% set max_date_query %}
+    SELECT MAX(_ingestion_date) FROM {{ this }}
+{% endset %}
+{% set max_date = run_query(max_date_query).columns[0].values()[0] %}
+{% endif %}
+
 -- ============================================================
 -- ORDERS : cast timestamps (NULL conservé si non livré), statut standardisé
 -- ============================================================
@@ -17,7 +24,7 @@ WITH orders_dedup AS (
     WHERE order_id IS NOT NULL
 
     {% if is_incremental() %}
-    AND TRY_CAST(_ingestion_date AS DATE) > (SELECT MAX(_ingestion_date) FROM {{ this }})
+    AND TRY_CAST(_ingestion_date AS DATE) > DATE '{{ max_date }}'
     {% endif %}
 ),
 orders_clean AS (

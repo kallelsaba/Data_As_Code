@@ -15,9 +15,8 @@ WITH orders_dedup AS (
     WHERE order_id IS NOT NULL
 
     {% if is_incremental() %}
-    AND _ingestion_date > (SELECT MAX(_ingestion_date) FROM {{ this }})
+    AND TRY_CAST(_ingestion_date AS DATE) > (SELECT MAX(_ingestion_date) FROM {{ this }})
     {% endif %}
-
 ),
 orders_clean AS (
     SELECT
@@ -29,7 +28,7 @@ orders_clean AS (
         order_delivered_carrier_date,
         order_delivered_customer_date,
         order_estimated_delivery_date,
-        _ingestion_date
+        ingestion_date_typed AS _ingestion_date
     FROM orders_dedup
     WHERE rn = 1
 ),

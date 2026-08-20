@@ -20,7 +20,7 @@ TABLES = {
             geolocation_lng VARCHAR,
             geolocation_city VARCHAR,
             geolocation_state VARCHAR,
-            _ingestion_date DATE
+            _ingestion_date VARCHAR
         """
     },
     "customers": {

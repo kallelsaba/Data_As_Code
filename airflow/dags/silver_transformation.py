@@ -207,4 +207,4 @@ with DAG(
 
     t4 = BashOperator(task_id="run_dbt_snapshot", bash_command="docker exec dbt dbt snapshot --select snap_stg_orders")
 
-    t1 >> t2 >> t_clean >> t3 >> t_snap_schema >>  t_clean_pre_snapshot >> t4
+    t1 >> t2 >> t_clean >> t3 >> t_clean_pre_run >> t_snap_schema >> t_clean_pre_snapshot >> t4

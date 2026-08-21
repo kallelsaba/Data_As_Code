@@ -184,19 +184,9 @@ with DAG(
         bash_command="docker exec dbt dbt run --select stg_orders"
     )
 
-    t_clean_snapshot = BashOperator(
-        task_id="clean_before_snapshot",
-        bash_command=(
-                "docker exec trino trino --execute "
-                "\"DROP TABLE IF EXISTS postgres.snapshots.snap_stg_orders__dbt_tmp\"; "
-                "docker exec postgres psql -U dataops -d dataops -c "
-                "\"DROP TYPE IF EXISTS snapshots.snap_stg_orders__dbt_tmp CASCADE\"; "
-        )
-    )
-
     t_snap_schema = PythonOperator(task_id="create_snapshots_schema", python_callable=create_snapshots_schema)
 
 
-    t4 = BashOperator(task_id="run_dbt_snapshot", bash_command="docker exec dbt dbt snapshot --select snap_stg_orders")
+    t4 = BashOperator(task_id="run_dbt_scd2", bash_command="docker exec dbt dbt snapshot --select snap_stg_orders")
 
-    t1 >> t2 >> t_clean_run >> t3 >> t_snap_schema >> t_clean_snapshot >> t4
+    t1 >> t2 >> t_clean_run >> t3 >> t_snap_schema >> t4

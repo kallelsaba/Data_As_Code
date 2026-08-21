@@ -169,27 +169,33 @@ with DAG(
 ) as dag:
     t1 = PythonOperator(task_id="create_hive_schema", python_callable=create_hive_schema)
     t2 = PythonOperator(task_id="create_external_tables", python_callable=create_external_tables)
-    t_clean = BashOperator(
-    	task_id="clean_dbt_temp_tables",
+    t_clean_run = BashOperator(
+    	task_id="clean_before_run",
     	bash_command=(
         	"docker exec trino trino --execute "
         	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders__dbt_tmp\"; "
         	"docker exec trino trino --execute "
         	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders__dbt_backup\"; "
-		"docker exec trino trino --execute "
-    		"\"DROP TABLE IF EXISTS postgres.snapshots.snap_stg_orders__dbt_tmp\"; "
-                "docker exec postgres psql -U dataops -d dataops -c "
-                "\"DROP TYPE IF EXISTS snapshots.snap_stg_orders__dbt_tmp\"; "
     	)
     )
+
     t3 = BashOperator(
         task_id="run_dbt_stg_orders",
         bash_command="docker exec dbt dbt run --select stg_orders"
     )
 
+    t_clean_snapshot = BashOperator(
+        task_id="clean_before_snapshot",
+        bash_command=(
+                "docker exec trino trino --execute "
+                "\"DROP TABLE IF EXISTS postgres.snapshots.snap_stg_orders__dbt_tmp\"; "
+                "docker exec postgres psql -U dataops -d dataops -c "
+                "\"DROP TYPE IF EXISTS snapshots.snap_stg_orders__dbt_tmp\"; "
+        )
+    )
 
     t_snap_schema = PythonOperator(task_id="create_snapshots_schema", python_callable=create_snapshots_schema)
 
     t4 = BashOperator(task_id="run_dbt_snapshot", bash_command="docker exec dbt dbt snapshot --select snap_stg_orders")
 
-    t1 >> t2 >> t_clean >> t3 >> t_snap_schema >> t4
+    t1 >> t2 >> t_clean_run >> t3 >> t_clean_snapshot >> t_snap_schema >> t4

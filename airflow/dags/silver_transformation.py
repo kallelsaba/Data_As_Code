@@ -150,6 +150,14 @@ def create_external_tables():
         cur.execute(query)
         cur.fetchall()
 
+def create_snapshots_schema():
+    conn = psycopg2.connect(host="postgres", user="dataops", password="dataops", dbname="dataops")
+    conn.autocommit = True
+    cur = conn.cursor()
+    cur.execute("CREATE SCHEMA IF NOT EXISTS snapshots;")
+    cur.close()
+    conn.close()
+
 with DAG(
     dag_id="silver_transformation",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
@@ -173,4 +181,9 @@ with DAG(
         task_id="run_dbt_stg_orders",
         bash_command="docker exec dbt dbt run --select stg_orders"
     )
-    t1 >> t2 >> t_clean >>t3
+
+    t_snap_schema = PythonOperator(task_id="create_snapshots_schema", python_callable=create_snapshots_schema)
+
+    t4 = BashOperator(task_id="run_dbt_snapshot", bash_command="docker exec dbt dbt snapshot --select snap_stg_orders")
+
+    t1 >> t2 >> t_clean >> t3 >> t_snap_schema >>t4

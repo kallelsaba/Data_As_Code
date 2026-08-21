@@ -1,7 +1,8 @@
 {{ config(
     materialized='incremental',
     unique_key='dbt_scd_id',
-    on_schema_change='sync_all_columns'
+    on_schema_change='sync_all_columns',
+    views_enabled=false
 ) }}
 
 WITH source_data AS (

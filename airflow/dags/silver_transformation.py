@@ -175,7 +175,9 @@ with DAG(
         	"docker exec trino trino --execute "
         	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders__dbt_tmp\"; "
         	"docker exec trino trino --execute "
-        	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders__dbt_backup\""
+        	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders__dbt_backup\";"
+		"docker exec trino trino --execute "
+    		"\"DROP TABLE IF EXISTS postgres.snapshots.snap_stg_orders__dbt_tmp\"; "
     	)
     )
     t3 = BashOperator(

@@ -5,11 +5,9 @@
 ) }}
 
 WITH source_data AS (
-
     SELECT
         *,
         CAST(_ingestion_date AS TIMESTAMP) AS updated_at,
-
         md5(
             CONCAT(
                 CAST(order_id AS VARCHAR),
@@ -19,23 +17,18 @@ WITH source_data AS (
                 CAST(_ingestion_date AS VARCHAR)
             )
         ) AS dbt_scd_id
-
     FROM {{ ref('stg_orders') }}
-
-),
+)
 
 {% if is_incremental() %}
 
-current_data AS (
-
+, current_data AS (
     SELECT *
     FROM {{ this }}
     WHERE dbt_valid_to IS NULL
-
 ),
 
 changes AS (
-
     SELECT s.*
     FROM source_data s
     LEFT JOIN current_data c
@@ -43,7 +36,6 @@ changes AS (
         AND s.order_item_id = c.order_item_id
     WHERE c.dbt_scd_id IS NULL
        OR s.updated_at > c.updated_at
-
 )
 
 SELECT
@@ -51,7 +43,6 @@ SELECT
     updated_at AS dbt_valid_from,
     CAST(NULL AS TIMESTAMP) AS dbt_valid_to,
     FALSE AS dbt_is_deleted
-
 FROM changes
 
 {% else %}
@@ -61,7 +52,6 @@ SELECT
     updated_at AS dbt_valid_from,
     CAST(NULL AS TIMESTAMP) AS dbt_valid_to,
     FALSE AS dbt_is_deleted
-
 FROM source_data
 
 {% endif %}

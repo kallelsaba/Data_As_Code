@@ -187,6 +187,6 @@ with DAG(
     t_snap_schema = PythonOperator(task_id="create_snapshots_schema", python_callable=create_snapshots_schema)
 
 
-    t4 = BashOperator(task_id="run_dbt_scd2", bash_command="docker exec dbt dbt snapshot --select snap_stg_orders")
+    t4 = BashOperator(task_id="run_dbt_scd2", bash_command="docker exec dbt dbt run --select snap_stg_orders")
 
     t1 >> t2 >> t_clean_run >> t3 >> t_snap_schema >> t4

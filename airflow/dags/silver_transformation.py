@@ -4,6 +4,7 @@ import pendulum
 import trino
 from airflow.sdk import Asset
 from airflow.operators.bash import BashOperator
+import psycopg2
 
 bronze_dataset = Asset("s3://bronze/")
 

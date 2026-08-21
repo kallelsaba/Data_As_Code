@@ -5,7 +5,7 @@
         target_schema='snapshots',
         unique_key="order_id || '-' || CAST(order_item_id AS VARCHAR)",
         strategy='timestamp',
-        updated_at='CAST(_ingestion_date AS TIMESTAMP)'
+        updated_at='snapshot_updated_at'
     )
 }}
 

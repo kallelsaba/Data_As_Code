@@ -8,15 +8,21 @@ WITH source_data AS (
     SELECT
         *,
         CAST(_ingestion_date AS TIMESTAMP) AS updated_at,
-        md5(
-            CONCAT(
-                CAST(order_id AS VARCHAR),
-                '-',
-                CAST(order_item_id AS VARCHAR),
-                '-',
-                CAST(_ingestion_date AS VARCHAR)
+
+        to_hex(
+            md5(
+                to_utf8(
+                    CONCAT(
+                        CAST(order_id AS VARCHAR),
+                        '-',
+                        CAST(order_item_id AS VARCHAR),
+                        '-',
+                        CAST(_ingestion_date AS VARCHAR)
+                    )
+                )
             )
         ) AS dbt_scd_id
+
     FROM {{ ref('stg_orders') }}
 )
 

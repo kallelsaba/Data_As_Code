@@ -179,7 +179,7 @@ with DAG(
 		"docker exec trino trino --execute "
     		"\"DROP TABLE IF EXISTS postgres.snapshots.snap_stg_orders__dbt_tmp\"; "
                 "docker exec postgres psql -U dataops -d dataops -c "
-                "\"DROP TYPE IF EXISTS postgres.snapshots.snap_stg_orders__dbt_tmp\"; "
+                "\"DROP TYPE IF EXISTS snapshots.snap_stg_orders__dbt_tmp\"; "
     	)
     )
     t3 = BashOperator(

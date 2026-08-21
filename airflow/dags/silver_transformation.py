@@ -188,14 +188,6 @@ with DAG(
 
     t_snap_schema = PythonOperator(task_id="create_snapshots_schema", python_callable=create_snapshots_schema)
 
-    t_clean_pre_snapshot = BashOperator(
-    	task_id="clean_before_snapshot",
-    	bash_command=(
-        	"docker exec trino trino --execute "
-        	"\"DROP TABLE IF EXISTS postgres.snapshots.snap_stg_orders__dbt_tmp\""
-    	)
-    )
-
     t4 = BashOperator(task_id="run_dbt_snapshot", bash_command="docker exec dbt dbt snapshot --select snap_stg_orders")
 
     t1 >> t2 >> t_clean >> t3 >> t_snap_schema >> t_clean_pre_snapshot >> t4

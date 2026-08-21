@@ -94,7 +94,7 @@ def ingest_csv():
 with DAG(
     dag_id="bronze_ingestion",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
-    schedule="30 12 * * *",
+    schedule="39 12 * * *",
     catchup=False,
     is_paused_upon_creation=False,
     tags=["bronze", "ingestion"],

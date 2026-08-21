@@ -1,7 +1,6 @@
 
 {{ config(
-    materialized='incremental',
-    incremental_strategy='append',
+    materialized='table',
     unique_key=['order_id', 'order_item_id'],
     views_enabled=false,
     on_table_exists='drop'

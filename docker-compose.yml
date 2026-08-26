@@ -360,6 +360,9 @@ services:
 
       SEARCH_PORT: 9200
 
+      ELASTICSEARCH_HOST: opensearch
+      ELASTICSEARCH_PORT: 9200
+
 
       SERVER_HOST_API_URL: http://openmetadata:8585
 
@@ -368,6 +371,21 @@ services:
 
       - "8585:8585"
 
+# ==================================================
+# OpenMetaData Ingestion
+# ==================================================
+
+  om-ingestion:
+    build:
+      context: ./openmetadata/ingestion
+    container_name: om-ingestion
+    restart: unless-stopped
+    depends_on:
+      - trino
+      - openmetadata
+    volumes:
+      - ./openmetadata/ingestion:/ingestion
+
 
 # ==================================================
 # Superset Database
@@ -375,9 +393,8 @@ services:
 
   superset:
 
-
-    image: apache/superset:latest
-
+    build:
+      context: ./superset
 
     container_name: superset
 
@@ -387,6 +404,7 @@ services:
 
     environment:
       SUPERSET_SECRET_KEY: "8y3LSbqhiMUhOSwOaCmVIOhGJJ/GBJo5/LT/RVFSBdPXMxiEaeXWSGTH"
+      SUPERSET_CONFIG_PATH: /app/pythonpath/superset_config.py
 
 
     depends_on:
@@ -581,6 +599,21 @@ services:
       - "8081:8080"
     volumes:
       - ./trino/catalog:/etc/trino/catalog
+
+
+
+# ==================================================
+# Dashboard
+# ==================================================
+  dashboard:
+    build:
+      context: ./dashboard
+    container_name: dashboard
+    restart: unless-stopped
+    ports:
+      - "8050:8050"
+    depends_on:
+      - postgres
 
 # ==================================================
 # Volumes

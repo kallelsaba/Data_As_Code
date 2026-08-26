@@ -1,0 +1,22 @@
+slice_name: CA par mois
+viz_type: line
+params:
+  viz_type: line
+  datasource: 3a1b2c3d-0002-4a2b-9c3d-000000000002__table
+  granularity_sqla: order_purchase_timestamp
+  time_grain_sqla: P1M
+  time_range: No filter
+  metrics:
+    - expressionType: SIMPLE
+      column:
+        column_name: order_total_value
+      aggregate: SUM
+      label: CA total
+  adhoc_filters: []
+  row_limit: 10000
+  color_scheme: supersetColors
+query_context: null
+cache_timeout: null
+uuid: 4b2c3d4e-0001-4a2b-9c3d-000000000101
+version: 1.0.0
+dataset_uuid: 3a1b2c3d-0002-4a2b-9c3d-000000000002

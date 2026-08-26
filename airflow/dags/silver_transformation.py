@@ -189,4 +189,20 @@ with DAG(
 
     t4 = BashOperator(task_id="run_dbt_scd2", bash_command="docker exec dbt dbt run --select snap_stg_orders")
 
-    t1 >> t2 >> t_clean_run >> t3 >> t_snap_schema >> t4
+
+    t5 = BashOperator(
+    	task_id="om_ingest_trino",
+    	bash_command="docker exec om-ingestion metadata ingest -c /ingestion/trino_service.yaml"
+    )
+    t6 = BashOperator(
+    	task_id="om_ingest_postgres",
+    	bash_command="docker exec om-ingestion metadata ingest -c /ingestion/postgres_service.yaml"
+    )
+    t7 = BashOperator(
+    	task_id="om_ingest_dbt",
+    	bash_command="docker exec om-ingestion metadata ingest -c /ingestion/dbt_service.yaml"
+    )
+
+
+
+    t1 >> t2 >> t_clean_run >> t3 >> t_snap_schema >> t4  >> t5 >> t6 >> t7

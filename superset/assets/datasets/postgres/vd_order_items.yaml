@@ -1,0 +1,8 @@
+table_name: vd_order_items
+schema: null
+database_uuid: 2f1a3b4c-0001-4a2b-9c3d-000000000001
+uuid: 3a1b2c3d-0003-4a2b-9c3d-000000000003
+sql: |
+  SELECT order_id, product_category_name, price, freight_value
+  FROM silver.stg_orders
+version: 1.0.0

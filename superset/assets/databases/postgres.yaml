@@ -1,0 +1,9 @@
+database_name: postgres
+sqlalchemy_uri: postgresql://dataops:dataops@postgres:5432/dataops
+uuid: 2f1a3b4c-0001-4a2b-9c3d-000000000001
+version: 1.0.0
+extra:
+  metadata_params: {}
+  engine_params: {}
+  metadata_cache_timeout: {}
+  schemas_allowed_for_csv_upload: []

@@ -7,5 +7,8 @@ RUN pip install --no-cache-dir \
     paramiko \
     requests \
     smbprotocol \
-    trino
-	
+    trino \
+    setuptools \
+    "openmetadata-ingestion[trino,postgres,dbt,superset]==1.12.14" \
+    && pip install --no-cache-dir --force-reinstall --no-deps "sqlalchemy>=2.0,<2.1" \
+    && pip install --no-cache-dir --force-reinstall "setuptools<81"

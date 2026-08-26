@@ -1,0 +1,13 @@
+table_name: vd_orders
+schema: null
+database_uuid: 2f1a3b4c-0001-4a2b-9c3d-000000000001
+uuid: 3a1b2c3d-0002-4a2b-9c3d-000000000002
+sql: |
+  SELECT DISTINCT
+    order_id, order_purchase_timestamp, order_status,
+    order_total_value, total_delivery_days, delivery_delay_days,
+    is_delivered_on_time, review_score, is_positive_review, is_negative_review,
+    customer_state
+  FROM silver.stg_orders
+main_dttm_col: order_purchase_timestamp
+version: 1.0.0

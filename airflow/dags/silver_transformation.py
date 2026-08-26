@@ -173,6 +173,8 @@ with DAG(
     	task_id="clean_before_run",
     	bash_command=(
         	"docker exec trino trino --execute "
+        	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders\"; "
+        	"docker exec trino trino --execute "
         	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders__dbt_tmp\"; "
         	"docker exec trino trino --execute "
         	"\"DROP TABLE IF EXISTS postgres.silver.stg_orders__dbt_backup\"; "

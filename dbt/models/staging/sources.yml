@@ -4,10 +4,18 @@ sources:
     schema: bronze
     tables:
       - name: orders
+        description: "Commandes brutes ingérées depuis Mockoon (API simulée)"
       - name: customers
-      - name: order_items
-      - name: geolocation
+        description: "Clients bruts ingérés depuis Mockoon"
       - name: products
+        description: "Catalogue produits brut ingéré via SFTP"
       - name: sellers
+        description: "Vendeurs bruts ingérés via SFTP"
       - name: order_payments
+        description: "Paiements bruts ingérés via SMB"
       - name: order_reviews
+        description: "Avis clients bruts ingérés via SMB"
+      - name: order_items
+        description: "Détail des articles par commande, ingéré depuis Mockoon"
+      - name: geolocation
+        description: "Coordonnées géographiques par code postal, fichier CSV local"

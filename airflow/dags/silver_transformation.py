@@ -5,6 +5,7 @@ import trino
 from airflow.sdk import Asset
 from airflow.operators.bash import BashOperator
 import psycopg2
+import requests
 
 bronze_dataset = Asset("s3://bronze/")
 
@@ -159,6 +160,27 @@ def create_snapshots_schema():
     cur.close()
     conn.close()
 
+def refresh_superset_cache():
+    session = requests.Session()
+    resp = session.post(
+        "http://superset:8088/api/v1/security/login",
+        json={"username": "admin", "password": "admin", "provider": "db", "refresh": True},
+    )
+    resp.raise_for_status()
+    token = resp.json()["access_token"]
+    session.headers.update({"Authorization": f"Bearer {token}"})
+
+    csrf = session.get("http://superset:8088/api/v1/security/csrf_token/")
+    csrf.raise_for_status()
+    session.headers.update({
+        "X-CSRFToken": csrf.json()["result"],
+        "Referer": "http://superset:8088",
+    })
+
+    resp = session.put("http://superset:8088/api/v1/dashboard/3/cache_refresh")
+    resp.raise_for_status()
+
+
 with DAG(
     dag_id="silver_transformation",
     start_date=pendulum.datetime(2026, 8, 11, tz=local_tz),
@@ -205,6 +227,11 @@ with DAG(
     	bash_command="docker exec om-ingestion metadata ingest -c /ingestion/dbt_service.yaml"
     )
 
+    t_refresh_cache = BashOperator(
+    	task_id="refresh_superset_cache",
+    	python_callable=refresh_superset_cache
+    )
 
 
-    t1 >> t2 >> t_clean_run >> t3 >> t_snap_schema >> t4  >> t5 >> t6 >> t7
+
+    t1 >> t2 >> t_clean_run >> t3 >> t_snap_schema >> t4  >> t5 >> t6 >> t7 >> t_refresh_cache

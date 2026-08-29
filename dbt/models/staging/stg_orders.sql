@@ -264,7 +264,7 @@ base AS (
         oi.shipping_limit_date,
 
         pr.product_id,
-        pr.product_category_name,
+        COALESCE(pr.product_category_name, 'outros') AS product_category_name,
         pr.product_weight_g,
         pr.product_length_cm,
         pr.product_height_cm,

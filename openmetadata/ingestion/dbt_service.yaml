@@ -8,6 +8,7 @@ source:
         dbtConfigType: local
         dbtCatalogFilePath: /ingestion/dbt_artifacts/catalog.json
         dbtManifestFilePath: /ingestion/dbt_artifacts/manifest.json
+      dbtUpdateDescriptions: true
 sink:
   type: metadata-rest
   config: {}

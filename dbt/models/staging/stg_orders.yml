@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Table nettoyée au grain commande x article, avec KPIs logistiques et satisfaction client."
+    columns:
+      - name: order_id
+        description: "Identifiant unique de la commande"
+      - name: order_item_id
+        description: "Numéro d'article au sein d'une commande (1, 2, 3...)"
+      - name: order_status
+        description: "Statut standardisé de la commande (delivered, shipped, canceled...)"
+      - name: customer_id
+        description: "Identifiant du client ayant passé la commande"
+      - name: product_category_name
+        description: "Catégorie du produit ; 'outros' si non renseignée à la source"
+      - name: price
+        description: "Prix de l'article, validé >= 0"
+      - name: freight_value
+        description: "Frais de livraison de l'article"
+      - name: review_score
+        description: "Note de satisfaction 1-5 laissée par le client"
+      - name: total_delivery_days
+        description: "Délai total entre achat et livraison, en jours"
+      - name: is_delivered_on_time
+        description: "TRUE si livré avant ou à la date estimée"

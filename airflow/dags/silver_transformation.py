@@ -227,7 +227,7 @@ with DAG(
     	bash_command="docker exec om-ingestion metadata ingest -c /ingestion/dbt_service.yaml"
     )
 
-    t_refresh_cache = BashOperator(
+    t_refresh_cache = PythonOperator(
     	task_id="refresh_superset_cache",
     	python_callable=refresh_superset_cache
     )

@@ -3,6 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import date
 from datetime import datetime
 import requests, boto3, paramiko, io
+import os
 import pendulum
 from smbclient import register_session, listdir, open_file
 from airflow.sdk import Asset
@@ -15,7 +16,7 @@ bronze_dataset = Asset("s3://bronze/")
 local_tz = pendulum.timezone("Africa/Tunis")
 
 MINIO = boto3.client("s3", endpoint_url="http://minio:9000",
-                      aws_access_key_id="admin", aws_secret_access_key="password123")
+                      aws_access_key_id=os.environ["MINIO_ROOT_USER"], aws_secret_access_key=os.environ["MINIO_ROOT_PASSWORD"])
 
 SOURCES_DIR = "/opt/airflow/sources"
 
@@ -33,7 +34,7 @@ def ingest_mockoon():
 
 def ingest_sftp():
     ssh = paramiko.Transport(("sftp", 22))
-    ssh.connect(username="dataops", password="dataops")
+    ssh.connect(username="dataops", password=os.environ["SFTP_PASSWORD"])
     sftp = paramiko.SFTPClient.from_transport(ssh)
     for f in sftp.listdir("/upload"):
         buf = io.BytesIO()
@@ -48,11 +49,7 @@ def ingest_sftp():
     ssh.close()
 
 def ingest_smb():
-    register_session(
-        "smb",
-        username="dataops",
-        password="dataops"
-    )
+    register_session("smb", username="dataops", password=os.environ["SMB_PASSWORD"])
 
     for filename in listdir(r"\\smb\share"):
         with open_file(

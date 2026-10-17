@@ -9,7 +9,7 @@ source:
         type: Postgres
         username: dataops
         authType:
-          password: dataops
+          password: ${SUPERSET_PASSWORD}
         hostPort: postgres:5432
         database: superset
 

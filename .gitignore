@@ -20,6 +20,21 @@ sources/smb/*.csv
 
 # Fichiers d'environnement contenant des secrets (si vous en créez un .env plus tard)
 .env
+.env.*
+!.env.example
+
+# Local environments and generated build artifacts
+**/venv/
+**/.venv/
+**/target/
+openmetadata/ingestion/dbt_artifacts/
+*.zip
+*.o
+*.log
+*.save*
+gitlab_ci_key*
+sources/mockoon/csv/
+data-platform/
 
 # Fichiers Python compilés (si vous ajoutez des scripts)
 __pycache__/

@@ -35,6 +35,7 @@ Le script est idempotent :
 """
 
 import json
+import os
 import requests
 
 
@@ -44,8 +45,8 @@ import requests
 
 SUPERSET_URL = "http://superset:8088"
 
-USERNAME = "admin"
-PASSWORD = "admin"
+USERNAME = os.environ["SUPERSET_USERNAME"]
+PASSWORD = os.environ["SUPERSET_PASSWORD"]
 
 DB_NAME = "PostgreSQL DataOps"
 

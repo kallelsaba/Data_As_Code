@@ -6,6 +6,7 @@ from airflow.sdk import Asset
 from airflow.operators.bash import BashOperator
 import psycopg2
 import requests
+import os
 
 bronze_dataset = Asset("s3://bronze/")
 
@@ -153,7 +154,7 @@ def create_external_tables():
         cur.fetchall()
 
 def create_snapshots_schema():
-    conn = psycopg2.connect(host="postgres", user="dataops", password="dataops", dbname="dataops")
+    conn = psycopg2.connect(host="postgres", user=os.environ["POSTGRES_USER"], password=os.environ["POSTGRES_PASSWORD"], dbname="dataops")
     conn.autocommit = True
     cur = conn.cursor()
     cur.execute("CREATE SCHEMA IF NOT EXISTS snapshots;")
@@ -164,7 +165,7 @@ def refresh_superset_cache():
     session = requests.Session()
     resp = session.post(
         "http://superset:8088/api/v1/security/login",
-        json={"username": "admin", "password": "admin", "provider": "db", "refresh": True},
+        json={"username": os.environ["SUPERSET_USERNAME"], "password": os.environ["SUPERSET_PASSWORD"], "provider": "db", "refresh": True},
     )
     resp.raise_for_status()
     token = resp.json()["access_token"]

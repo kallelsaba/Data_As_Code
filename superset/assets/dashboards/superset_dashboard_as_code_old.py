@@ -17,10 +17,11 @@ Usage :
 
 import requests
 import json
+import os
 
 SUPERSET_URL = "http://superset:8088"   # changez en http://<IP_VM2>:8088 si lancé hors VM
-USERNAME = "admin"
-PASSWORD = "admin"
+USERNAME = os.environ["SUPERSET_USERNAME"]
+PASSWORD = os.environ["SUPERSET_PASSWORD"]
 
 DB_NAME = "PostgreSQL DataOps"
 SQLALCHEMY_URI = "postgresql+psycopg2://dataops:dataops@postgres:5432/dataops"
